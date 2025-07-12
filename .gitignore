@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.python-version
+venv/
+.env/
+
+# Virtual Environments
+.venv/
+env/
+venv/
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Render Specific
+render.yaml.local
+
+# Test files
+test_*.py
+test.txt
+
+# Local Development
+local_settings.py
+secrets.ini

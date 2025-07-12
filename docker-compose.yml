@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  blockchain-verifier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: blockchain-verifier:latest
+    container_name: blockchain-verifier
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    environment:
+      - PORT=${PORT:-8000}
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE:-10}
+      - RATE_LIMIT=${RATE_LIMIT:-5}
+      - WORKERS=${WORKERS:-2}
+      - TIMEOUT=${TIMEOUT:-120}
+      - READ_ONLY_FS=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-8000}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT:-1}'
+          memory: ${MEMORY_LIMIT:-512M}
+    volumes:
+      - blockchain-data:/app/data
+      - /tmp:/app/tmp
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  blockchain-data:
+    driver: local

@@ -1,0 +1,90 @@
+{
+  "info": {
+    "_postman_id": "b1c2d3e4-f5a6-7890-abcd-ef1234567890",
+    "name": "Blockchain Verifier API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Hash File",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8000/hash",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["hash"]
+        }
+      }
+    },
+    {
+      "name": "Verify File",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": ""
+            },
+            {
+              "key": "stored_hash",
+              "type": "text",
+              "value": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8000/verify",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["verify"]
+        }
+      }
+    },
+    {
+      "name": "View Blockchain Log",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/blockchain-log",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["blockchain-log"]
+        }
+      }
+    },
+    {
+      "name": "Validate Chain",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/validate-chain",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["validate-chain"]
+        }
+      }
+    }
+  ]
+}
