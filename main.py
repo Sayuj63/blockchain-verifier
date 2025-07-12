@@ -164,6 +164,11 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
+def get_app():
+    """Factory function for Gunicorn"""
+    return app
+
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to Blockchain Verifier API"}
@@ -179,6 +184,7 @@ async def health_check():
     system_info = {
         "status": "healthy" if is_valid else "degraded",
         "timestamp": datetime.utcnow().isoformat() + "Z",
+        "port": os.getenv("PORT", "8000"),
         "version": app.version,
         "blockchain": {
             "valid": is_valid,
@@ -643,5 +649,9 @@ if __name__ == "__main__":
     print(f"Expected: {expected2}")
     print(f"Result: {'PASS' if result2 == expected2 else 'FAIL'}")
     
-    # Run the FastAPI application
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    if os.getenv("ENVIRONMENT", "development") == "production":
+        print("Production mode - use Gunicorn via entrypoint.sh")
+    else:
+        print("Running in development mode (uvicorn directly)")
+        # Run the FastAPI application
+        uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv("PORT", "8000")), reload=True, log_level="info")

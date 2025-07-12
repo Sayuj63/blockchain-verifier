@@ -65,6 +65,7 @@ The application supports the following environment variables:
 
 | Variable | Description | Default |
 |----------|-------------|--------|
+| `ENVIRONMENT` | Application environment (development/production) | `development` |
 | `PORT` | Port to run the application on | `8000` |
 | `MAX_FILE_SIZE` | Maximum file size in MB | `10` |
 | `RATE_LIMIT` | Rate limit per minute | `5` |
@@ -79,7 +80,14 @@ docker run -p 8000:8000 -e MAX_FILE_SIZE=20 -e RATE_LIMIT=10 blockchain-verifier
 
 ### Production Deployment
 
-For production deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+The application is configured for production deployment with Gunicorn:
+
+1. The application uses a factory function `get_app()` for Gunicorn compatibility
+2. In production mode, the application is started via the entrypoint.sh script using Gunicorn
+3. Port configuration is handled via the PORT environment variable (default: 8000)
+4. Set ENVIRONMENT=production for production mode
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## API Endpoints
 
