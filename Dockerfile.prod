@@ -1,4 +1,4 @@
-# Builder stage (keep existing)
+# Builder stage
 FROM python:3.9-slim AS builder
 WORKDIR /app
 RUN python -m venv /opt/venv
@@ -7,31 +7,29 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir gunicorn
 
-# Runner stage (modified)
+# Runner stage
 FROM python:3.9-alpine
 RUN apk add --no-cache curl
+
+# Create user and directory structure first
 RUN adduser -D nonroot && \
     mkdir -p /app/tmp /app/data && \
     chown -R nonroot:nonroot /app
 
 WORKDIR /app
 
-# Add these lines before USER nonroot
-RUN chmod -R 755 /app && \
-    chown -R nonroot:nonroot /app && \
-    find /app -type d -exec chmod 755 {} \; && \
+# Copy files with correct ownership first
+COPY --from=builder --chown=nonroot:nonroot /opt/venv /opt/venv
+COPY --chown=nonroot:nonroot . .
+
+# Set permissions (simplified)
+RUN find /app -type d -exec chmod 755 {} \; && \
     find /app -type f -exec chmod 644 {} \; && \
     chmod +x /app/entrypoint.sh
 
 USER nonroot
 
-COPY --from=builder --chown=nonroot:nonroot /opt/venv /opt/venv
-COPY --chown=nonroot:nonroot . .
-
-# Make entrypoint executable
-RUN chmod +x /app/entrypoint.sh
-
-# Environment variables (Render-compatible defaults)
+# Environment variables
 ENV PATH="/opt/venv/bin:$PATH" \
     ENVIRONMENT=production \
     PORT=10000 \
@@ -45,4 +43,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:${PORT}/health || exit 1
 
 EXPOSE $PORT
-ENTRYPOINT ["/app/entrypoint.sh"]  # Keep entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
