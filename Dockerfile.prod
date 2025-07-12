@@ -15,6 +15,14 @@ RUN adduser -D nonroot && \
     chown -R nonroot:nonroot /app
 
 WORKDIR /app
+
+# Add these lines before USER nonroot
+RUN chmod -R 755 /app && \
+    chown -R nonroot:nonroot /app && \
+    find /app -type d -exec chmod 755 {} \; && \
+    find /app -type f -exec chmod 644 {} \; && \
+    chmod +x /app/entrypoint.sh
+
 USER nonroot
 
 COPY --from=builder --chown=nonroot:nonroot /opt/venv /opt/venv

@@ -52,13 +52,6 @@ import os
 rate_limit = os.environ.get("RATE_LIMIT", "5")
 limiter = Limiter(key_func=get_remote_address, default_limits=[f"{rate_limit}/minute"])
 
-# Initialize blockchain log
-BLOCKCHAIN_LOG: List[Dict[str, Any]] = []
-
-# Initialize the blockchain with a genesis block if empty
-if not BLOCKCHAIN_LOG:
-    BLOCKCHAIN_LOG.append(create_genesis_block())
-
 
 def calculate_block_header_hash(block: Dict[str, Any]) -> str:
     """
@@ -148,10 +141,6 @@ def validate_blockchain() -> Tuple[bool, Optional[int]]:
     # All blocks are valid
     return True, None
 
-
-# Initialize blockchain with genesis block if empty
-if not BLOCKCHAIN_LOG:
-    BLOCKCHAIN_LOG.append(create_genesis_block())
 
 app = FastAPI(
     title="Blockchain Verifier",
@@ -631,6 +620,13 @@ async def verify_file_integrity(
         )
 
 
+# Initialize blockchain log
+BLOCKCHAIN_LOG: List[Dict[str, Any]] = []
+
+# Initialize the blockchain with a genesis block if empty
+if not BLOCKCHAIN_LOG:
+    BLOCKCHAIN_LOG.append(create_genesis_block())
+
 if __name__ == "__main__":
     # Test cases for calculate_file_hash function
     print("\nTest cases for calculate_file_hash function:")
@@ -649,9 +645,19 @@ if __name__ == "__main__":
     print(f"Expected: {expected2}")
     print(f"Result: {'PASS' if result2 == expected2 else 'FAIL'}")
     
+    # Final verification
+    assert 'BLOCKCHAIN_LOG' in globals(), "Blockchain not initialized"
+    assert len(BLOCKCHAIN_LOG) > 0, "Genesis block missing"
+    
     if os.getenv("ENVIRONMENT", "development") == "production":
         print("Production mode - use Gunicorn via entrypoint.sh")
     else:
         print("Running in development mode (uvicorn directly)")
         # Run the FastAPI application
-        uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv("PORT", "8000")), reload=True, log_level="info")
+        uvicorn.run(
+            "main:app", 
+            host="0.0.0.0", 
+            port=int(os.getenv("PORT", "8000")), 
+            reload=os.getenv("ENVIRONMENT", "development") == "development",
+            timeout_keep_alive=30
+        )

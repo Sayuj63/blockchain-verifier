@@ -18,6 +18,27 @@ env/
 build/
 develop-eggs/
 dist/
+
+# Development/deployment scripts
+deploy.sh
+health_check.py
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+
+# Exclude these specific files from ignore
+!README.md
+!requirements.txt
+!entrypoint.sh
 downloads/
 eggs/
 .eggs/

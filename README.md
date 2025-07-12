@@ -4,6 +4,44 @@
 ![Blockchain](https://img.shields.io/badge/Blockchain-Immutable-blue)
 ![Docker Image Size](https://img.shields.io/docker/image-size/library/python?label=Base%20Image)
 
+## 🚀 Deployment Options
+
+### Option 1: Local Deployment (No Docker Required)
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/blockchain-verifier.git
+cd blockchain-verifier
+
+# Run the local deployment script
+chmod +x deploy_local.sh
+./deploy_local.sh
+```
+
+This will:
+1. Create a virtual environment
+2. Install dependencies
+3. Run tests
+4. Start the application on http://localhost:8000
+
+### Option 2: Docker Deployment
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/blockchain-verifier.git
+cd blockchain-verifier
+
+# Make sure Docker is running
+# Run the deployment script
+chmod +x deploy.sh
+./deploy.sh
+```
+
+This will:
+1. Build a Docker image
+2. Run a Docker container
+3. Start the application on http://localhost:10000
+
 ## 🌟 Live Demo
 `https://your-app.fly.dev`
 
@@ -112,5 +150,10 @@ For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 Once the application is running, you can access the interactive API documentation at:
 
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- Local Deployment:
+  - Swagger UI: http://localhost:8000/docs
+  - ReDoc: http://localhost:8000/redoc
+
+- Docker Deployment:
+  - Swagger UI: http://localhost:10000/docs
+  - ReDoc: http://localhost:10000/redoc
